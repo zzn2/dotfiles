@@ -1,0 +1,87 @@
+" My Vimperator rc
+" Created by zhu 2008-08-03
+
+set popups=2
+set showtabline=0
+set verbose=9
+
+noremap <Right> gt
+noremap <Left> gT
+noremap <C-T> :tb<cr>
+
+"reload vimperatorrc
+map ,r :cd<CR>:so .vimperatorrc<CR>
+
+"Show feed button on statusbar
+:javascript << EOM
+(function(){
+ var feedPanel = document.createElement('statusbarpanel');
+ var feedButton = document.getElementById('feed-button');
+ feedPanel.setAttribute('id', 'feed-panel-clone');
+ feedPanel.appendChild(feedButton.cloneNode(true)); 
+ feedButton.parentNode.removeChild(feedButton);
+ /* document.getElementById('status-bar').insertBefore(
+	 feedPanel, document.getElementById('security-button')
+	 ); */
+ document.getElementById('liberator-statusline').insertBefore(
+	 feedPanel, document.getElementById('liberator-statusline-field-tabcount')
+	 );
+ })();
+EOM
+
+javascript <<EOM
+liberator.modules.commands.addUserCommand( ['tb'], 'Toggle Tablist',
+	function(arg){
+		with(gBrowser.mTabContainer) {
+			collapsed ? collapsed = false : collapsed = true;
+		}
+	},{
+	}
+);
+EOM
+
+
+"Add mapping 'C-c' copy
+javascript <<EOM
+liberator.modules.mappings.addUserMap( [liberator.modules.modes.NORMAL], ['<C-c>'],
+		'Copy selected text or ',
+		function () {
+			var sel = liberator.modules.buffer.getCurrentWord();
+			if (sel) {
+				liberator.modules.util.copyToClipboard(sel, true);
+				liberator.echo ( 'Yanked: ' + liberator.modules.util.escapeHTML(sel) );
+			}
+		}, {}
+);
+EOM
+
+"Show tab button on statusbar
+:javascript << EOM
+(function(){
+ for ( i=0; i<liberator.modules.tabs.count; i++)
+ {
+ xul= liberator.modules.tabs.getTab(i)
+
+// var tabPanel = document.createElement('image');
+// tabPanel.setAttribute('src', 'http://vimperator.org/trac/chrome/site/favicon.png');
+ var tabPanel = document.createElement('button');
+ tabPanel.setAttribute('label', xul.label );
+/* document.getElementById('liberator-statusline').insertBefore(
+	 tabPanel, document.getElementById('liberator-statusline-field-tabcount')
+	 ); */
+ }
+ })();
+
+/*
+ var feedPanel = document.createElement('statusbarpanel');
+ var feedButton = document.getElementById('feed-button');
+ feedPanel.setAttribute('id', 'feed-panel-clone');
+ feedPanel.appendChild(feedButton.cloneNode(true)); 
+ feedButton.parentNode.removeChild(feedButton);
+ document.getElementById('status-bar').insertBefore(
+	 feedPanel, document.getElementById('security-button')
+	 );
+	 */
+EOM
+
+echo ".vimperatorrc sourced"
