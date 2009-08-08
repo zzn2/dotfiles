@@ -50,16 +50,22 @@ endfunction
 syntax enable
 
 if has("gui_running")
-	if MySys() == "windows"
+	set guioptions-=T
+	set guioptions-=m
+	if has("gui_win32")
 		set lines=70 
 		set columns=110
-		set guifont=ÇlÇr_ÉSÉVÉbÉN:h9
+		if ( &encoding == 'cp936' )
+			"chinese windows
+			set guifont=MS\ Gothic:h9
+		else
+			"japanese windows
+			set guifont=ÇlÇr_ÉSÉVÉbÉN:h9
+		endif
 		colorscheme darkblue
 	else "mac or linux
 		set lines=50
 		set columns=90
-		set guioptions-=T
-		set guioptions-=m
 		colorscheme elflord
 	endif
 else "console
@@ -98,8 +104,7 @@ set cmdheight=1
 "show line number
 set nu
 
-"Ignore case when searching
-set ignorecase
+"search
 set incsearch
 
 "No sound on errors.
@@ -153,10 +158,6 @@ vnoremap <silent> # :call VisualSearch('b')<cr>
 
 " Moving around and tabs
 "------------------------------
-"Map space to / and c-space to ?
-map <space> /
-map <c-spase> ?
-
 "Smart way to move between windows.
 map <C-j> <C-W>j
 map <C-k> <C-W>k
