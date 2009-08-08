@@ -64,8 +64,9 @@ if has("gui_running")
 		endif
 		colorscheme darkblue
 	else "mac or linux
-		set lines=50
-		set columns=90
+		set lines=80
+		set columns=110
+		set guifont=Monaco:h9
 		colorscheme elflord
 	endif
 else "console
