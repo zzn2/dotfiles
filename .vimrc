@@ -50,11 +50,18 @@ endfunction
 syntax enable
 
 if has("gui_running")
-	set guioptions-=T
-	set guioptions-=m
+	set guioptions-=T "hide toolbar
+	set guioptions-=m "hide menubar
+	set guioptions-=L "hide left menubar
+	set guioptions-=r "hide right menubar
 	if has("gui_win32")
-		set lines=70 
-		set columns=110
+		"adjust window size on first load
+		if exists("s:vimrc_loaddone") == 0
+			set lines=70 
+			set columns=110
+		endif
+		let s:vimrc_loaddone = 1
+
 		if ( &encoding == 'cp936' )
 			"chinese windows
 			set guifont=MS\ Gothic:h9
@@ -62,30 +69,32 @@ if has("gui_running")
 			"japanese windows
 			set guifont=ÇlÇr_ÉSÉVÉbÉN:h9
 		endif
+
 		colorscheme darkblue
 	else "mac or linux
-		set lines=80
-		set columns=110
+		"adjust window size on first load
+		if exists("s:vimrc_loaddone") == 0
+			set lines=80
+			set columns=110
+		endif
+		let s:vimrc_loaddone = 1
+
 		set guifont=Monaco:h9
-		colorscheme elflord
+		colorscheme torte
 	endif
 else "console
-	if MySys() == "mac"
-		set background=dark
-		colorscheme darkblue
-	else
-		colorscheme default
-	endif
+	set background=dark
+	colorscheme darkblue
 endif
 
 autocmd BufEnter * :syntax sync fromstart
 
 hi Search term=reverse ctermbg=Yellow ctermfg=Black guibg=Yellow guifg=Black
-hi Cursorline term=reverse ctermbg=Blue ctermfg=Black
+hi Cursorline term=reverse ctermfg=Black ctermbg=Yellow guibg=DarkBlue
 
-"Highlight current
-set cursorline
-"hi cursorline guibg=#333333
+"Show Cursorline only in current buffer
+autocmd WinLeave * set nocursorline
+autocmd WinEnter * set cursorline
 
 " VIM userinterface
 "-----------------------------
@@ -118,7 +127,6 @@ set showmatch
 
 "Highlight search things
 set hlsearch
-
 
 " Statusline
 "-----------------------------
@@ -174,10 +182,10 @@ iab ins /* INS-S 09S-PR1-00000 zhu */<cr><cr>/* INS-S 09S-PR1-00000 zhu */
 " Editing mappings etc.
 "--------------------------------
 "Move a line of text using control
-nmap <C-J> mz:m+<cr>`z
-nmap <C-K> mz:m-2<cr>`z
-vmap <C-J> :m'>+<cr>`<my`>mzgv`yo`z
-vmap <C-K> :m'<-2<cr>`>my`<mzgv`yo`z
+"nmap <C-J> mz:m+<cr>`z
+"nmap <C-K> mz:m-2<cr>`z
+"vmap <C-J> :m'>+<cr>`<my`>mzgv`yo`z
+"vmap <C-K> :m'<-2<cr>`>my`<mzgv`yo`z
 
 " Command-line config
 "--------------------------------
@@ -203,6 +211,27 @@ set cindent
 
 set nowrap
 
+"Do not open IME by default
+set iminsert=0
+set imsearch=-1
+
 " i18n
 "------------------------------------
 set fileencodings=iso-2022-jp,utf-8,sjis,euc-jp,cp932
+
+" Plugin Settings
+"-----------------------------------
+
+"Lookupfile setting
+let g:LookupFile_MinPatLength=2                 "start search after 2 types
+let g:LookupFile_PreserveLastPattern=0          "do not save last search
+let g:LookupFile_PreservePatternHistory=1       "save search history
+let g:LookupFile_AlwaysAcceptFirst=1            "select the 1st item on return
+let g:LookupFile_AllowNewFiles=0                "new file creation now allowed
+if filereadable("./filenametags")
+	let g:LookupFile_TagExpr='"./filenametags"' "set the tag file name
+endif
+nmap <silent> <space> :LUBufs<cr>
+nmap <silent> <space><space> :LUWalk<cr>
+
+
