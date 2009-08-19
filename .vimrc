@@ -32,6 +32,12 @@ map <leader>s :source ~/.vimrc<cr>
 map <leader>e :e! ~/.vimrc<cr>
 autocmd! bufwritepost .vimrc source ~/.vimrc
 
+"Run local sources
+"Write some local account here
+"like twitter account that shouldn't to be open
+"and something set local to specific machine.
+source $HOME/vimrc.local
+
 " Sub Functions
 "----------------------------
 function! MySys()
@@ -233,5 +239,4 @@ if filereadable("./filenametags")
 endif
 nmap <silent> <space> :LUBufs<cr>
 nmap <silent> <space><space> :LUWalk<cr>
-
 
