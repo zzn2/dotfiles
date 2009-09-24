@@ -3,7 +3,7 @@
 
 set popups=2
 set showtabline=0
-set verbose=9
+"set verbose=9
 
 noremap <Right> gt
 noremap <Left> gT
@@ -55,6 +55,103 @@ liberator.modules.mappings.addUserMap( [liberator.modules.modes.NORMAL], ['<C-c>
 );
 EOM
 
+"Add a bit.ly url shorter
+:javascript << EOM
+function Bitly(url){
+	try {
+		var xml = new XMLHttpRequest();
+		if ( url == null ) {
+			url = liberator.modules.buffer.URL; //get the current URL
+		}
+		xml.open("GET", "http://api.bit.ly/shorten?version=2.0.1&login=zzn2&apiKey=R_7fcf1d8a566f332f8b08b2c3171c9fca&longUrl="+url, false );
+		xml.send(null);
+
+		var json = JSON.parse(xml.responseText);
+		if ( json.errorCode != 0 ) {
+			throw("error:"+json.errorMessage);
+		}
+
+		for ( i in json.results ) {
+			return json.results[i].shortUrl;
+		}
+
+	} catch(ex) {
+		alert(ex.errorCode);
+	}
+}
+
+function geturl() {
+	alert ( liberator.modules.buffer.URL );
+}
+
+liberator.modules.commands.addUserCommand( ['shorten'], 'Bit.ly Shorten',
+	function(args) {
+		if ( args == '' ) {
+			alert( 'no param' );
+		} else {
+			try {
+//				Bitly(args);
+				geturl();
+			}
+			catch(ex) {
+			}
+		}
+	},{
+		options: true
+	}
+);
+EOM
+
+"Add a command to post twitter
+:javascript << EOM
+function sayTwitter(username,password,stat){
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", "http://twitter.com/statuses/update.json", false );//, username, password );
+	xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded' );
+	xhr.setRequestHeader('X-Twitter-Client', 'zzn2' );
+	xhr.setRequestHeader('X-Twitter-Client-Version', '0.1' );
+	xhr.setRequestHeader('X-Twitter-Client-URL', 'http://twitter.com/zzn2' );
+	xhr.setRequestHeader('Authorization', 'Basic ' + btoa(username + ":" + password));
+	xhr.onreadystatechange = function() {
+		alert ( "readyState:" + readyState );
+		alert ( xhr.responseText );
+	};
+
+
+	var tweet = stat.string;
+	if ( tweet.match(/\url/i)) {
+		tweet = tweet.replace( "\\url", Bitly(null) ) ;
+	}
+
+	if( confirm( tweet ) ) {
+		xhr.send("status=" + encodeURIComponent(tweet));
+	}
+}
+
+liberator.modules.commands.addUserCommand( ['twitter'], 'Say Twitter',
+	function(args) {
+		if ( args == '' ) {
+			alert( 'no param' );
+		} else {
+			try {
+				var passwordManager = Cc["@mozilla.org/login-manager;1"].getService(Ci.nsILoginManager);
+				var logins = passwordManager.findLogins({}, 'http://twitter.com', 'https://twitter.com', null);
+				if ( logins.length) {
+					[username, password] = [logins[0].username, logins[0].password];
+					sayTwitter(username, password, args);
+				} else {
+					alert ( "Twitter: account not found" );
+				}
+			}
+			catch(ex) {
+			}
+		}
+	},{
+		options: true
+	}
+);
+EOM
+
 "Show tab button on statusbar
 :javascript << EOM
 (function(){
@@ -84,4 +181,4 @@ EOM
 	 */
 EOM
 
-echo ".vimperatorrc sourced"
+echo ".vimperatorrc sourced!"
