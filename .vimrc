@@ -34,7 +34,7 @@ autocmd! bufwritepost .vimrc source ~/.vimrc
 
 "Run local sources
 "Write some local account here
-"like twitter account that shouldn't to be open
+"such as twitter account that shouldn't to be open
 "and something set local to specific machine.
 source $HOME/vimrc.local
 
@@ -73,7 +73,7 @@ if has("gui_running")
 			set guifont=MS\ Gothic:h9
 		else
 			"japanese windows
-			set guifont=ÇlÇr_ÉSÉVÉbÉN:h9
+			set guifont=ÇlÇr\ ÉSÉVÉbÉN:h9
 		endif
 
 		colorscheme darkblue
@@ -224,6 +224,10 @@ set imsearch=-1
 " i18n
 "------------------------------------
 set fileencodings=iso-2022-jp,utf-8,sjis,euc-jp,cp932
+" to support euc-jp in windows
+if has("gui_win32")
+	map <Leader>a :e++enc=euc-jp<CR>
+endif
 
 " Plugin Settings
 "-----------------------------------
