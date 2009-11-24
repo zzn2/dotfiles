@@ -1,7 +1,7 @@
 " My Vimperator rc
 " Created by zhu 2008-08-03
 
-set popups=2
+set popups=window
 set showtabline=0
 "set verbose=9
 
@@ -13,7 +13,7 @@ noremap <C-T> :tb<cr>
 map ,r :cd<CR>:so .vimperatorrc<CR>
 
 "Show feed button on statusbar
-:javascript << EOM
+javascript << EOM
 (function(){
  var feedPanel = document.createElement('statusbarpanel');
  var feedButton = document.getElementById('feed-button');
