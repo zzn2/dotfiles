@@ -30,7 +30,7 @@ nmap <leader>f :find<cr>
 "Fast reloading of the .vimrc
 map <leader>s :source ~/.vimrc<cr>
 map <leader>e :e! ~/.vimrc<cr>
-autocmd! bufwritepost .vimrc source ~/.vimrc
+autocmd! BufWritePost .vimrc source ~/.vimrc
 
 "Run local sources
 "Write some local account here
@@ -91,6 +91,7 @@ if has("gui_running")
 else "console
 	set background=dark
 	colorscheme darkblue
+	hi Comment ctermfg=DarkBlue 
 endif
 
 autocmd BufEnter * :syntax sync fromstart
@@ -99,8 +100,11 @@ hi Search term=reverse ctermbg=Yellow ctermfg=Black guibg=Yellow guifg=Black
 hi Cursorline term=reverse ctermfg=Black ctermbg=Yellow guibg=DarkBlue
 
 "Show Cursorline only in current buffer
-autocmd WinLeave * set nocursorline
-autocmd WinEnter * set cursorline
+"autocmd WinLeave * set nocursorline
+"autocmd WinEnter * set nocursorline
+autocmd BufLeave * set nocursorline
+autocmd BufEnter * set cursorline
+autocmd BufCreate * set cursorline
 
 " VIM userinterface
 "-----------------------------
@@ -244,3 +248,6 @@ endif
 nmap <silent> <space> :LUBufs<cr>
 nmap <silent> <space><space> :LUWalk<cr>
 
+"NERDTree setting
+" <enter> to toggle NERDTree
+nmap <silent> <C-m> :NERDTreeToggle<cr>
