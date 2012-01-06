@@ -2,8 +2,7 @@
 " Created by zhu 2008-08-03
 
 set popups=window
-set showtabline=0
-"set verbose=9
+set toolbars=none
 
 noremap <Right> gt
 noremap <Left> gT

@@ -36,7 +36,9 @@ autocmd! BufWritePost .vimrc source ~/.vimrc
 "Write some local account here
 "such as twitter account that shouldn't to be open
 "and something set local to specific machine.
-source $HOME/vimrc.local
+if !exists("$HOME/vimrc.local")
+	source $HOME/vimrc.local
+endif
 
 " Sub Functions
 "----------------------------
